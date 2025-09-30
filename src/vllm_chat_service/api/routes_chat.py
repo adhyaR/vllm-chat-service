@@ -1,12 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from vllm_chat_service.models.schemas import ChatRequest, ChatResponse
 from vllm_chat_service.services.vllm_client import VLLMClient
+import logging
+import httpx
 
+log = logging.getLogger(__name__)
 router = APIRouter()
 
 
-def get_vllm_client() -> VLLMClient:
-    return VLLMClient()
+def get_vllm_client(request: Request) -> VLLMClient:
+    return request.app.state.vllm_client
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -23,7 +26,11 @@ async def chat_endpoint(
                 "stream": False,
             }
         )  # have multiple response options (hopefully)
-        response = responses["choices"][0].message["content"]
-        return ChatResponse(content=response, finish_reason=responses["finish_reason"])
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=str(e))
+        response = responses["choices"][0]
+        return ChatResponse(
+            content=response["message"]["content"],
+            finish_reason=response.get("finish_reason", "stop"),
+        )
+    except httpx.HTTPError as e:
+        log.error(f"VLLM upstream error {e}")
+        raise HTTPException(status_code=502, detail="VLLM is unavailable")
