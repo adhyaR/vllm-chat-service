@@ -17,19 +17,34 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
+
+      - name: Set up uv
+        uses: uv-org/setup-uv@v3
+        with:
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          uv sync --dev
 
       - name: Lint with flake8
         run: |
           pip install flake8
           flake8 .
 
+      - name: Type check with mypy
+        run: |
+          uv run mypy src/vllm_chat_service
+
+      - name: Format code with black
+        run: |
+          uv run black --check .
+
+      - name: Lint with ruff
+        run: |
+          uv run ruff check .
+
       - name: Run tests
         run: |
-          pip install pytest
-          pytest
+          uv run pytest -q --maxfail=1 --disable-warnings
