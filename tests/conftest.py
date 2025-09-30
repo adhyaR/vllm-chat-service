@@ -1,6 +1,6 @@
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
-from vllm_chat_service.api.main import app
+from vllm_chat_service.main import app
 
 
 @pytest_asyncio.fixture
