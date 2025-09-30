@@ -31,3 +31,6 @@ dev = [
     "pytest-asyncio>=1.2.0",
     "ruff>=0.13.2",
 ]
+
+[tool.uv.sources]
+vllm_chat_service = { path = "src/vllm_chat_service" }
