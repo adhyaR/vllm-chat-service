@@ -9,6 +9,12 @@ router = APIRouter()
 
 
 def get_vllm_client(request: Request) -> VLLMClient:
+    """Retrieve the vLLM client from the app state.
+
+    Args:
+        request: A FastAPI Request object.
+    Returns:
+        An instance of VLLMClient."""
     return request.app.state.vllm_client
 
 
