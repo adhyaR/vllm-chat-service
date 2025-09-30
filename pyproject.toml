@@ -1,0 +1,33 @@
+[project]
+name = "vllm-chat-service"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Adhya", email = "adhya.rajaram20@imperial.ac.uk" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.118.0",
+    "httpx>=0.28.1",
+    "pydantic>=2.11.9",
+    "pydantic-settings>=2.11.0",
+    "uvicorn>=0.37.0",
+]
+
+[project.scripts]
+vllm-chat-service = "vllm_chat_service:main"
+
+[build-system]
+requires = ["uv_build>=0.8.22,<0.9.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "black>=25.9.0",
+    "mypy>=1.18.2",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "ruff>=0.13.2",
+]
